@@ -3,7 +3,6 @@ package ndr.brt;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +16,8 @@ public class PredicateValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = new StubValidator();
+        validator = PredicateValidator.<String>on("right"::equals)
+                .returns(CODE, DESCRIPTION);
     }
 
     @Test
@@ -46,21 +46,4 @@ public class PredicateValidatorTest {
         assertThat(result.getMessage()).isEqualTo("CODE: description");
     }
 
-    private class StubValidator extends PredicateValidator<String> {
-
-        @Override
-        protected Function<String, Boolean> predicate() {
-            return "right"::equals;
-        }
-
-        @Override
-        protected String code() {
-            return CODE;
-        }
-
-        @Override
-        protected String description() {
-            return DESCRIPTION;
-        }
-    }
 }

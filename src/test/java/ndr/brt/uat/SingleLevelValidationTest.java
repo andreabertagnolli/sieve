@@ -5,7 +5,6 @@ import ndr.brt.Result;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -15,7 +14,9 @@ public class SingleLevelValidationTest {
 
     @Test
     public void validate_age_of_some_people() throws Exception {
-        PredicateValidator<Person> validator = new OfAge();
+        PredicateValidator<Person> validator = PredicateValidator
+                .<Person>on(person -> person.getAge() >= 18)
+                .returns("AGE001", "aaaa");
 
         List<Person> people = asList(
                 new Person(17),
@@ -30,24 +31,6 @@ public class SingleLevelValidationTest {
 
         assertThat(results.stream().filter(Result::isError).count()).isEqualTo(2);
         assertThat(results.stream().filter(Result::isOk).count()).isEqualTo(1);
-    }
-
-    private class OfAge extends PredicateValidator<Person> {
-
-        @Override
-        protected Function<Person, Boolean> predicate() {
-            return person -> person.getAge() >= 18;
-        }
-        @Override
-        protected String code() {
-            return "AGE001";
-        }
-
-        @Override
-        protected String description() {
-            return "This person is not of age.";
-        }
-
     }
 
     private class Person {
