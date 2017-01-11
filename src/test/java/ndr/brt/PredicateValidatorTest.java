@@ -1,5 +1,6 @@
 package ndr.brt;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.function.Function;
@@ -10,10 +11,17 @@ import static org.junit.Assert.assertTrue;
 
 public class PredicateValidatorTest {
 
+    private static final String CODE = "CODE";
+    private static final String DESCRIPTION = "description";
+    private PredicateValidator<String> validator;
+
+    @Before
+    public void setUp() throws Exception {
+        validator = new StubValidator();
+    }
+
     @Test
     public void returns_one_result_for_object() throws Exception {
-        PredicateValidator<String> validator = new StubValidator();
-
         Stream<Result> result = validator.validate("any");
 
         assertThat(result.count()).isEqualTo(1L);
@@ -21,8 +29,6 @@ public class PredicateValidatorTest {
 
     @Test
     public void when_validation_is_ok_returns_ok() throws Exception {
-        PredicateValidator<String> validator = new StubValidator();
-
         Result result = validator
                 .validate("right")
                 .findFirst().get();
@@ -32,13 +38,12 @@ public class PredicateValidatorTest {
 
     @Test
     public void when_validation_is_wrong_returns_error() throws Exception {
-        PredicateValidator<String> validator = new StubValidator();
-
         Result result = validator
                 .validate("wrong")
                 .findFirst().get();
 
         assertTrue(result.isError());
+        assertThat(result.getMessage()).isEqualTo("CODE: description");
     }
 
     private class StubValidator extends PredicateValidator<String> {
@@ -46,6 +51,16 @@ public class PredicateValidatorTest {
         @Override
         protected Function<String, Boolean> predicate() {
             return "right"::equals;
+        }
+
+        @Override
+        protected String code() {
+            return CODE;
+        }
+
+        @Override
+        protected String description() {
+            return DESCRIPTION;
         }
     }
 }
