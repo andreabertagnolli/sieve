@@ -1,7 +1,5 @@
 package ndr.brt;
 
-import java.lang.reflect.Field;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -25,36 +23,7 @@ public class PredicateValidator<T> {
     }
 
     private Function<Result, Result> setResultMessage(T object) {
-        return r -> r.withMessage(code + ": " + descriptionWith(object));
-    }
-
-    private String descriptionWith(T object) {
-        StringBuilder stringBuilder = new StringBuilder();
-        String remainDescription = description;
-        while (remainDescription.contains("{{")) {
-            int start = remainDescription.indexOf("{{");
-            int end = remainDescription.indexOf("}}");
-            stringBuilder.append(remainDescription.substring(0, start));
-            String fieldName = remainDescription.substring(start + 2, end);
-            remainDescription = remainDescription.substring(end + 2);
-            String fieldValue = getFieldValue(object, fieldName);
-            stringBuilder.append(fieldValue);
-        }
-        stringBuilder.append(remainDescription);
-        return stringBuilder.toString();
-    }
-
-    private String getFieldValue(T object, String fieldName) {
-        Class<?> clazz = object.getClass();
-        String fieldValue = "";
-        try {
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            fieldValue = Objects.toString(field.get(object));
-        } catch (Exception e) {
-            fieldValue = "_error_";
-        }
-        return fieldValue;
+        return r -> r.withMessage(code + ": " + new FieldPlaceholder(object).substituteOn(description));
     }
 
     public static <T> PredicateValidatorBuilder<T> okWhen(Function<T, Boolean> predicate) {
