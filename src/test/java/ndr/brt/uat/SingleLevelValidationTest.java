@@ -15,8 +15,8 @@ public class SingleLevelValidationTest {
     @Test
     public void validate_age_of_some_people() throws Exception {
         PredicateValidator<Person> validator = PredicateValidator
-                .<Person>on(person -> person.getAge() >= 18)
-                .returns("AGE001", "aaaa");
+                .<Person>okWhen(person -> person.getAge() >= 18)
+                .returns("AGE001", "This person is not of age.");
 
         List<Person> people = asList(
                 new Person(17),

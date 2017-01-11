@@ -16,7 +16,7 @@ public class PredicateValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = PredicateValidator.<String>on("right"::equals)
+        validator = PredicateValidator.<String>okWhen("right"::equals)
                 .returns(CODE, DESCRIPTION);
     }
 

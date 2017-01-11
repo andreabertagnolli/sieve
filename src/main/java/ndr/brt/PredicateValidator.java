@@ -26,7 +26,7 @@ public class PredicateValidator<T> {
         return r -> r.withMessage(code + ": " + description);
     }
 
-    public static <T> PredicateValidatorBuilder<T> on(Function<T, Boolean> predicate) {
+    public static <T> PredicateValidatorBuilder<T> okWhen(Function<T, Boolean> predicate) {
         return new PredicateValidatorBuilder<T>(predicate);
     }
 
