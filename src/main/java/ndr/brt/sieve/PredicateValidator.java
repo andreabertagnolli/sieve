@@ -17,13 +17,15 @@ public class PredicateValidator<T> {
     }
 
     public Stream<Result> validate(T object) {
-        return Stream.of(object)
-                .filter(predicate.negate())
-                .map(o -> new Result(o, code, description));
+        return validate(Stream.of(object));
     }
 
     public Stream<Result> validate(Collection<T> collection) {
-        return collection.stream()
+        return validate(collection.stream());
+    }
+
+    private Stream<Result> validate(Stream<T> stream) {
+        return stream
                 .filter(predicate.negate())
                 .map(o -> new Result(o, code, description));
     }
