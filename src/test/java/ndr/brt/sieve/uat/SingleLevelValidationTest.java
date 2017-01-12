@@ -1,7 +1,7 @@
 package ndr.brt.sieve.uat;
 
 import ndr.brt.sieve.PredicateValidator;
-import ndr.brt.sieve.Result;
+import ndr.brt.sieve.Bran;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,9 +38,9 @@ public class SingleLevelValidationTest {
     public void use_placeholder_to_insert_into_message_object_information() throws Exception {
         Person person = new Person("Mark", 16);
 
-        Result result = validator.validate(person).findFirst().get();
+        Bran bran = validator.validate(person).findFirst().get();
 
-        assertThat(result.getMessage()).isEqualTo("AGE001: This person is not of age. Mark's age is 16");
+        assertThat(bran.getMessage()).isEqualTo("AGE001: This person is not of age. Mark's age is 16");
     }
 
     private class Person {

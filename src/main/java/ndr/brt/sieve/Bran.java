@@ -1,12 +1,12 @@
 package ndr.brt.sieve;
 
-public class Result {
+public class Bran {
 
     private final Object object;
     private final String code;
     private final String description;
 
-    public Result(Object object, String code, String description) {
+    public Bran(Object object, String code, String description) {
         this.object = object;
         this.code = code;
         this.description = description;

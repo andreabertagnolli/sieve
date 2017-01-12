@@ -22,7 +22,7 @@ public class PredicateValidatorTest {
 
     @Test
     public void returns_one_result_for_object() throws Exception {
-        Stream<Result> result = validator.validate("any");
+        Stream<Bran> result = validator.validate("any");
 
         assertThat(result.count()).isEqualTo(1L);
     }
@@ -38,12 +38,12 @@ public class PredicateValidatorTest {
 
     @Test
     public void when_validation_is_wrong_returns_error() throws Exception {
-        Result result = validator
+        Bran bran = validator
                 .validate("wrong")
                 .findFirst().get();
 
-        assertTrue(result.isError());
-        assertThat(result.getMessage()).isEqualTo("CODE: description");
+        assertTrue(bran.isError());
+        assertThat(bran.getMessage()).isEqualTo("CODE: description");
     }
 
 }

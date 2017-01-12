@@ -16,18 +16,18 @@ public class PredicateValidator<T> {
         this.predicate = predicate;
     }
 
-    public Stream<Result> validate(T object) {
+    public Stream<Bran> validate(T object) {
         return validate(Stream.of(object));
     }
 
-    public Stream<Result> validate(Collection<T> collection) {
+    public Stream<Bran> validate(Collection<T> collection) {
         return validate(collection.stream());
     }
 
-    private Stream<Result> validate(Stream<T> stream) {
+    private Stream<Bran> validate(Stream<T> stream) {
         return stream
                 .filter(predicate.negate())
-                .map(o -> new Result(o, code, description));
+                .map(o -> new Bran(o, code, description));
     }
 
     public static <T> PredicateValidatorBuilder<T> okWhen(Predicate<T> predicate) {
