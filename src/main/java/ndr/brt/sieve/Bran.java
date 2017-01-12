@@ -12,14 +12,6 @@ public class Bran {
         this.description = description;
     }
 
-    public boolean isOk() {
-        return false;
-    }
-
-    public boolean isError() {
-        return !isOk();
-    }
-
     public String getMessage() {
         return code + ": " + FieldPlaceholder.fieldPlaceholder(object).apply(description);
     }

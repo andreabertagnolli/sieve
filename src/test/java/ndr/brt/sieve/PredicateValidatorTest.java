@@ -37,12 +37,11 @@ public class PredicateValidatorTest {
     }
 
     @Test
-    public void when_validation_is_wrong_returns_error() throws Exception {
+    public void when_validation_is_wrong_returns_error_with_message() throws Exception {
         Bran bran = validator
                 .validate("wrong")
                 .findFirst().get();
 
-        assertTrue(bran.isError());
         assertThat(bran.getMessage()).isEqualTo("CODE: description");
     }
 
