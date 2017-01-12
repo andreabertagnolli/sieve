@@ -1,18 +1,18 @@
 package ndr.brt.sieve;
 
+import static ndr.brt.sieve.FieldPlaceholder.substitutePlaceholders;
+
 public class Bran {
 
-    private final Object object;
     private final String code;
     private final String description;
 
     public Bran(Object object, String code, String description) {
-        this.object = object;
         this.code = code;
-        this.description = description;
+        this.description = substitutePlaceholders(description, object);
     }
 
     public String getMessage() {
-        return code + ": " + FieldPlaceholder.fieldPlaceholder(object).apply(description);
+        return code + ": " + description;
     }
 }
