@@ -1,4 +1,4 @@
-package ndr.brt;
+package ndr.brt.sieve;
 
 import java.lang.reflect.Field;
 import java.util.Objects;

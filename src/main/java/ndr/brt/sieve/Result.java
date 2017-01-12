@@ -1,4 +1,4 @@
-package ndr.brt;
+package ndr.brt.sieve;
 
 public class Result {
 

@@ -1,5 +1,7 @@
-package ndr.brt;
+package ndr.brt.sieve;
 
+import ndr.brt.sieve.PredicateValidator;
+import ndr.brt.sieve.Result;
 import org.junit.Before;
 import org.junit.Test;
 

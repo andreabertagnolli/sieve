@@ -1,9 +1,7 @@
-package ndr.brt;
+package ndr.brt.sieve;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static ndr.brt.FieldPlaceholder.fieldPlaceholder;
 
 public class PredicateValidator<T> {
 
@@ -25,7 +23,7 @@ public class PredicateValidator<T> {
     }
 
     private Function<Result, Result> setResultMessage(T object) {
-        return r -> r.withMessage(code + ": " + fieldPlaceholder(object).apply(description));
+        return r -> r.withMessage(code + ": " + FieldPlaceholder.fieldPlaceholder(object).apply(description));
     }
 
     public static <T> PredicateValidatorBuilder<T> okWhen(Function<T, Boolean> predicate) {
