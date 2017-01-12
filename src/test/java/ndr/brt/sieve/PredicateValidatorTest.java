@@ -1,7 +1,5 @@
 package ndr.brt.sieve;
 
-import ndr.brt.sieve.PredicateValidator;
-import ndr.brt.sieve.Result;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,12 +28,12 @@ public class PredicateValidatorTest {
     }
 
     @Test
-    public void when_validation_is_ok_returns_ok() throws Exception {
-        Result result = validator
+    public void when_validation_is_ok_returns_nothing() throws Exception {
+        Long count = validator
                 .validate("right")
-                .findFirst().get();
+                .count();
 
-        assertTrue(result.isOk());
+        assertThat(count).isEqualTo(0L);
     }
 
     @Test

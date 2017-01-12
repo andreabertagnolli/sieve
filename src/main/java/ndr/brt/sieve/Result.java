@@ -2,15 +2,18 @@ package ndr.brt.sieve;
 
 public class Result {
 
-    private final Boolean ok;
-    private String message;
+    private final Object object;
+    private final String code;
+    private final String description;
 
-    public Result(Boolean ok) {
-        this.ok = ok;
+    public Result(Object object, String code, String description) {
+        this.object = object;
+        this.code = code;
+        this.description = description;
     }
 
     public boolean isOk() {
-        return ok;
+        return false;
     }
 
     public boolean isError() {
@@ -18,11 +21,6 @@ public class Result {
     }
 
     public String getMessage() {
-        return message;
-    }
-
-    public Result withMessage(String message) {
-        this.message = message;
-        return this;
+        return code + ": " + FieldPlaceholder.fieldPlaceholder(object).apply(description);
     }
 }

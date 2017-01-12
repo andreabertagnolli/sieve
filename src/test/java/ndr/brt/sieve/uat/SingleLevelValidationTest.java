@@ -1,6 +1,6 @@
 package ndr.brt.sieve.uat;
 
-import ndr.brt.sieve.PredicateValidator;
+import ndr.brt.sieve.ListValidator;
 import ndr.brt.sieve.Result;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,16 +8,15 @@ import org.junit.Test;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class SingleLevelValidationTest {
 
-    private PredicateValidator<Person> validator;
+    private ListValidator<Person> validator;
 
     @Before
     public void setUp() throws Exception {
-        validator = PredicateValidator
+        validator = ListValidator
                 .<Person>okWhen(person -> person.getAge() >= 18)
                 .returns("AGE001", "This person is not of age. {{name}}'s age is {{age}}");
     }
@@ -30,18 +29,14 @@ public class SingleLevelValidationTest {
                 new Person("Mark", 16)
         );
 
-        List<Result> results = people.stream()
-                .map(validator::validate)
-                .flatMap(e -> e)
-                .collect(toList());
+        long errors = validator.validate(people).count();
 
-        assertThat(results.stream().filter(Result::isError).count()).isEqualTo(2);
-        assertThat(results.stream().filter(Result::isOk).count()).isEqualTo(1);
+        assertThat(errors).isEqualTo(2L);
     }
 
     @Test
     public void use_placeholder_to_insert_into_message_object_information() throws Exception {
-        Result result = validator.validate(new Person("Mark", 16)).findFirst().get();
+        Result result = validator.validate(asList(new Person("Mark", 16))).findFirst().get();
 
         assertThat(result.getMessage()).isEqualTo("AGE001: This person is not of age. Mark's age is 16");
     }

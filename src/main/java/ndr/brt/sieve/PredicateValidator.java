@@ -1,15 +1,15 @@
 package ndr.brt.sieve;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class PredicateValidator<T> {
 
-    private final Function<T, Boolean> predicate;
+    private final Predicate<T> predicate;
     private final String code;
     private final String description;
 
-    private PredicateValidator(String code, String description, Function<T, Boolean> predicate) {
+    private PredicateValidator(String code, String description, Predicate<T> predicate) {
         this.code = code;
         this.description = description;
         this.predicate = predicate;
@@ -17,24 +17,19 @@ public class PredicateValidator<T> {
 
     public Stream<Result> validate(T object) {
         return Stream.of(object)
-                .map(predicate)
-                .map(Result::new)
-                .map(setResultMessage(object));
+                .filter(predicate.negate())
+                .map(o -> new Result(o, code, description));
     }
 
-    private Function<Result, Result> setResultMessage(T object) {
-        return r -> r.withMessage(code + ": " + FieldPlaceholder.fieldPlaceholder(object).apply(description));
-    }
-
-    public static <T> PredicateValidatorBuilder<T> okWhen(Function<T, Boolean> predicate) {
+    public static <T> PredicateValidatorBuilder<T> okWhen(Predicate<T> predicate) {
         return new PredicateValidatorBuilder<T>(predicate);
     }
 
     public static class PredicateValidatorBuilder<T> {
 
-        private final Function<T, Boolean> predicate;
+        private final Predicate<T> predicate;
 
-        PredicateValidatorBuilder(Function<T, Boolean> predicate) {
+        PredicateValidatorBuilder(Predicate<T> predicate) {
             this.predicate = predicate;
         }
 
