@@ -2,33 +2,30 @@ package ndr.brt;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class FieldPlaceholder {
 
-    private final Object object;
+    public static Function<String, String> fieldPlaceholder(Object object) {
+        return string -> {
+            StringBuilder actual = new StringBuilder();
+            String left = string;
+            while (left.contains("{{")) {
+                int start = left.indexOf("{{");
+                int end = left.indexOf("}}");
 
-    public FieldPlaceholder(Object object) {
-        this.object = object;
+                actual.append(left.substring(0, start));
+                String fieldName = left.substring(start + 2, end);
+                left = left.substring(end + 2);
+
+                actual.append(getFieldValue(object, fieldName));
+            }
+            actual.append(left);
+            return actual.toString();
+        };
     }
 
-    public String substituteOn(String description) {
-        StringBuilder stringBuilder = new StringBuilder();
-        String remainDescription = description;
-        while (remainDescription.contains("{{")) {
-            int start = remainDescription.indexOf("{{");
-            int end = remainDescription.indexOf("}}");
-
-            stringBuilder.append(remainDescription.substring(0, start));
-            String fieldName = remainDescription.substring(start + 2, end);
-            remainDescription = remainDescription.substring(end + 2);
-
-            stringBuilder.append(getFieldValue(object, fieldName));
-        }
-        stringBuilder.append(remainDescription);
-        return stringBuilder.toString();
-    }
-
-    private String getFieldValue(Object object, String fieldName) {
+    private static String getFieldValue(Object object, String fieldName) {
         Class<?> clazz = object.getClass();
         String fieldValue = "";
         try {
@@ -40,5 +37,4 @@ public class FieldPlaceholder {
         }
         return fieldValue;
     }
-
 }

@@ -3,6 +3,8 @@ package ndr.brt;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static ndr.brt.FieldPlaceholder.fieldPlaceholder;
+
 public class PredicateValidator<T> {
 
     private final Function<T, Boolean> predicate;
@@ -23,7 +25,7 @@ public class PredicateValidator<T> {
     }
 
     private Function<Result, Result> setResultMessage(T object) {
-        return r -> r.withMessage(code + ": " + new FieldPlaceholder(object).substituteOn(description));
+        return r -> r.withMessage(code + ": " + fieldPlaceholder(object).apply(description));
     }
 
     public static <T> PredicateValidatorBuilder<T> okWhen(Function<T, Boolean> predicate) {
