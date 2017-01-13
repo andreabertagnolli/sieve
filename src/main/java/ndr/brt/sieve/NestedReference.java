@@ -22,6 +22,11 @@ public class NestedReference<T, N> {
         return this;
     }
 
+    public NestedReference<T, N> execute(PredicateValidator<N> nestedValidator) {
+        validators.add(nestedValidator);
+        return this;
+    }
+
     public List<N> getObjects(T object) {
         return getNested.apply(object);
     }

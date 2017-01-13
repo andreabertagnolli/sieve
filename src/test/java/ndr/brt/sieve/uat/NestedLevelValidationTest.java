@@ -23,12 +23,9 @@ public class NestedLevelValidationTest {
         mother.addSon(new Person("Laura", 19));
         mother.addSon(new Person("Bruno", 6));
 
-        List<PredicateValidator<Person>> sonsValidators = asList(
-                PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"),
-                PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")
-        );
-
-        NestedReference<Mother, Person> sonsReference = NestedReference.on(Mother::getSons).execute(sonsValidators);
+        NestedReference<Mother, Person> sonsReference = NestedReference.on(Mother::getSons)
+                .execute(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
+                .execute(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!"));
 
         NestedValidator<Mother> validator = NestedValidator.<Mother>nestedValidator()
                 .with(sonsReference);
