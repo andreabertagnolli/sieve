@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class NestedReference<T, N> {
+
     private final Function<T, List<N>> getNested;
     private List<PredicateValidator<N>> validators = new ArrayList<>();
 
@@ -13,7 +14,7 @@ public class NestedReference<T, N> {
     }
 
     public static <T, N> NestedReference on(Function<T, List<N>> getNested) {
-        return new NestedReference<T, N>(getNested);
+        return new NestedReference<>(getNested);
     }
 
     public NestedReference<T, N> execute(List<PredicateValidator<N>> nestedValidators) {
