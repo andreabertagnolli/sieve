@@ -1,6 +1,7 @@
 package ndr.brt.sieve;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -17,14 +18,18 @@ public class PredicateValidator<T> {
     }
 
     public Stream<Bran> validate(T object) {
-        return validate(Stream.of(object));
+        return validateStream(Stream.of(object));
     }
 
     public Stream<Bran> validate(Collection<T> collection) {
-        return validate(collection.stream());
+        return validateStream(collection.stream());
     }
 
-    private Stream<Bran> validate(Stream<T> stream) {
+    public Stream<Bran> validate(List<T> collection) {
+        return validateStream(collection.stream());
+    }
+
+    private Stream<Bran> validateStream(Stream<T> stream) {
         return stream
                 .filter(predicate)
                 .map(o -> new Bran(o, code, description));

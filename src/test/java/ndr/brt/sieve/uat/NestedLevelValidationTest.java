@@ -1,6 +1,7 @@
 package ndr.brt.sieve.uat;
 
 import ndr.brt.sieve.Bran;
+import ndr.brt.sieve.NestedReference;
 import ndr.brt.sieve.NestedValidator;
 import ndr.brt.sieve.PredicateValidator;
 import ndr.brt.sieve.uat.pojo.Mother;
@@ -27,8 +28,10 @@ public class NestedLevelValidationTest {
                 PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")
         );
 
-        NestedValidator<Mother, Person> validator = NestedValidator.<Mother, Person>nestedValidator()
-                .on(Mother::getSons).use(sonsValidators);
+        NestedReference<Mother, Person> sonsReference = NestedReference.on(Mother::getSons).execute(sonsValidators);
+
+        NestedValidator<Mother> validator = NestedValidator.<Mother>nestedValidator()
+                .with(sonsReference);
 
         List<Bran> brans = validator.validate(mother).collect(toList());
 
@@ -51,8 +54,10 @@ public class NestedLevelValidationTest {
                 PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")
         );
 
-        NestedValidator<Mother, Person> validator = NestedValidator.<Mother, Person>nestedValidator()
-                .on(Mother::getSons).use(sonsValidators);
+        NestedReference<Mother, Person> sonsReference = NestedReference.on(Mother::getSons).execute(sonsValidators);
+
+        NestedValidator<Mother> validator = NestedValidator.<Mother>nestedValidator()
+                .with(sonsReference);
 
         List<Bran> brans = validator.validate(asList(mother, anotherMother)).collect(toList());
 

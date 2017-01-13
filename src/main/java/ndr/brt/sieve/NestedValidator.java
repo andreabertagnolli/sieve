@@ -1,60 +1,51 @@
 package ndr.brt.sieve;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
-public class NestedValidator<T, N> {
+public class NestedValidator<T> {
 
-    private final Function<T, List<N>> getNested;
-    private final List<PredicateValidator<N>> validators;
+    private List<NestedReference<T, ?>> nestedReferences = new ArrayList<>();
 
-    public NestedValidator(Function<T, List<N>> getNested, List<PredicateValidator<N>> validators) {
-        this.getNested = getNested;
-        this.validators = validators;
+    public NestedValidator() {
+
     }
 
-    public static <T, N> NestedValidatorBuilder<T, N> nestedValidator() {
-        return new NestedValidatorBuilder<T, N>();
+    public static <T> NestedValidator<T> nestedValidator() {
+        return new NestedValidator<>();
     }
 
     public Stream<Bran> validate(T object) {
         return Stream.of(object)
-                .map(getNested)
-                .map(this::validateStream)
+                .map(this::validateNested)
                 .flatMap(e -> e);
     }
 
     public Stream<Bran> validate(Collection<T> object) {
         return object.stream()
-                .map(getNested)
-                .map(this::validateStream)
+                .map(this::validateNested)
                 .flatMap(e -> e);
     }
 
-    private Stream<Bran> validateStream(List<N> object) {
-        return validators.stream()
-                .map(v -> v.validate(object))
-                .flatMap(v -> v);
+    private Stream<Bran> validateNested(T object) {
+        List<Bran> result = new ArrayList<>();
+        for (NestedReference<T, ?> nestedReference : nestedReferences) {
+            List nesteds = nestedReference.getObjects(object);
+            for (PredicateValidator<?> validator : nestedReference.getValidators()) {
+                List<Bran> collect = (List<Bran>) validator.validate(nesteds).collect(toList());
+                result.addAll(collect);
+            }
+        }
+        return result.stream();
     }
 
-    public static class NestedValidatorBuilder<T, N> {
-        private Function<T, List<N>> getNested;
-
-        public NestedValidatorBuilder<T, N> on(Function<T, List<N>> getNested) {
-            this.getNested = getNested;
-            return this;
-        }
-
-        public NestedValidator<T, N> use(PredicateValidator<N> validator) {
-            return new NestedValidator<T, N>(getNested, singletonList(validator));
-        }
-
-        public NestedValidator<T, N> use(List<PredicateValidator<N>> validators) {
-            return new NestedValidator<T, N>(getNested, validators);
-        }
+    public NestedValidator<T> with(NestedReference<T, ?> nestedReference) {
+        this.nestedReferences.add(nestedReference);
+        return this;
     }
+
 }
