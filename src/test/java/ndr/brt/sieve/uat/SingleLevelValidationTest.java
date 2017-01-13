@@ -18,7 +18,7 @@ public class SingleLevelValidationTest {
     @Before
     public void setUp() throws Exception {
         validator = PredicateValidator
-                .<Person>okWhen(person -> person.getAge() >= 18)
+                .<Person>when(person -> person.getAge() < 18)
                 .returns("AGE001", "This person is not of age. {{name}}'s age is {{age}}");
     }
 

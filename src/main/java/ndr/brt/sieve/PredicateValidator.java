@@ -26,11 +26,11 @@ public class PredicateValidator<T> {
 
     private Stream<Bran> validate(Stream<T> stream) {
         return stream
-                .filter(predicate.negate())
+                .filter(predicate)
                 .map(o -> new Bran(o, code, description));
     }
 
-    public static <T> PredicateValidatorBuilder<T> okWhen(Predicate<T> predicate) {
+    public static <T> PredicateValidatorBuilder<T> when(Predicate<T> predicate) {
         return new PredicateValidatorBuilder<T>(predicate);
     }
 

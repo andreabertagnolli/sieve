@@ -23,8 +23,8 @@ public class NestedLevelValidationTest {
         mother.addSon(new Person("Bruno", 6));
 
         List<PredicateValidator<Person>> sonsValidators = asList(
-                PredicateValidator.<Person>okWhen(p -> p.getAge() > 18).returns("AGE001", "{{name}} is not of age"),
-                PredicateValidator.<Person>okWhen(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} does not start with B")
+                PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"),
+                PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")
         );
 
         NestedValidator<Mother, Person> validator = NestedValidator.<Mother, Person>nestedValidator()
@@ -33,6 +33,6 @@ public class NestedLevelValidationTest {
         List<Bran> brans = validator.validate(mother).collect(toList());
 
         assertThat(brans.stream().filter(b -> "AGE001".equals(b.getCode())).count()).isEqualTo(2);
-        assertThat(brans.stream().filter(b -> "NAME001".equals(b.getCode())).count()).isEqualTo(2);
+        assertThat(brans.stream().filter(b -> "NAME001".equals(b.getCode())).count()).isEqualTo(1);
     }
 }

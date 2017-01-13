@@ -6,7 +6,6 @@ import org.junit.Test;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class PredicateValidatorTest {
 
@@ -16,8 +15,8 @@ public class PredicateValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validator = PredicateValidator.<String>okWhen("right"::equals)
-                .returns(CODE, DESCRIPTION);
+        validator = PredicateValidator
+                .<String>when(s -> !"right".equals(s)).returns(CODE, DESCRIPTION);
     }
 
     @Test
