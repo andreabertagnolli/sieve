@@ -2,6 +2,7 @@ package ndr.brt.sieve.uat;
 
 import ndr.brt.sieve.PredicateValidator;
 import ndr.brt.sieve.Bran;
+import ndr.brt.sieve.uat.pojo.Person;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,17 +44,4 @@ public class SingleLevelValidationTest {
         assertThat(bran.getMessage()).isEqualTo("AGE001: This person is not of age. Mark's age is 16");
     }
 
-    private class Person {
-        private final String name;
-        private final int age;
-
-        private Person(String name, int age) {
-            this.name = name;
-            this.age = age;
-        }
-
-        public int getAge() {
-            return age;
-        }
-    }
 }

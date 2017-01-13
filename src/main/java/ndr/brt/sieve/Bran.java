@@ -15,4 +15,8 @@ public class Bran {
     public String getMessage() {
         return code + ": " + description;
     }
+
+    public String getCode() {
+        return code;
+    }
 }
