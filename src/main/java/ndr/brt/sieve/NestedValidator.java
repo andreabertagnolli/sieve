@@ -1,5 +1,6 @@
 package ndr.brt.sieve;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -21,9 +22,23 @@ public class NestedValidator<T, N> {
     }
 
     public Stream<Bran> validate(T object) {
-        return validators.stream()
-                .map(v -> v.validate(getNested.apply(object)))
+        return Stream.of(object)
+                .map(getNested)
+                .map(this::validateStream)
                 .flatMap(e -> e);
+    }
+
+    public Stream<Bran> validate(Collection<T> object) {
+        return object.stream()
+                .map(getNested)
+                .map(this::validateStream)
+                .flatMap(e -> e);
+    }
+
+    private Stream<Bran> validateStream(List<N> object) {
+        return validators.stream()
+                .map(v -> v.validate(object))
+                .flatMap(v -> v);
     }
 
     public static class NestedValidatorBuilder<T, N> {
