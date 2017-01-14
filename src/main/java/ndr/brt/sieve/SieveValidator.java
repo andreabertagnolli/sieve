@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
 
 public class SieveValidator<T> {
 
+    private List<PredicateValidator<T>> validators = new ArrayList<>();
     private List<NestedReference<T, ?>> nestedReferences = new ArrayList<>();
 
     public static <T> SieveValidator<T> validator() {
@@ -16,14 +18,29 @@ public class SieveValidator<T> {
     }
 
     public Stream<Bran> validate(T object) {
-        return Stream.of(object)
-                .map(this::validateNested)
-                .flatMap(e -> e);
+        return validateStream(Stream.of(object));
     }
 
-    public Stream<Bran> validate(Collection<T> object) {
-        return object.stream()
-                .map(this::validateNested)
+    public Stream<Bran> validate(Collection<T> objects) {
+        return validateStream(objects.stream());
+    }
+
+    private Stream<Bran> validateStream(Stream<T> stream) {
+        List<T> objects = stream.collect(toList());
+
+        return concat(
+                objects.stream().
+                        map(this::validateTLevel)
+                        .flatMap(e -> e),
+                objects.stream()
+                        .map(this::validateNested)
+                        .flatMap(e -> e)
+        );
+    }
+
+    private Stream<Bran> validateTLevel(T object) {
+        return validators.stream()
+                .map(v -> v.validate(object))
                 .flatMap(e -> e);
     }
 
@@ -37,6 +54,11 @@ public class SieveValidator<T> {
             result.addAll(branStream.collect(toList()));
         }
         return result.stream();
+    }
+
+    public SieveValidator<T> with(PredicateValidator<T> validator) {
+        this.validators.add(validator);
+        return this;
     }
 
     public SieveValidator<T> with(NestedReference<T, ?> nestedReference) {
