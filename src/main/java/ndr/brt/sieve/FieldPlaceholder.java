@@ -27,12 +27,19 @@ public class FieldPlaceholder {
 
     private static String getFieldValue(Object object, String fieldName) {
         try {
-            Class<?> clazz = object.getClass();
-            Field field = clazz.getDeclaredField(fieldName);
+            Field field = getField(object.getClass(), fieldName);
             field.setAccessible(true);
             return Objects.toString(field.get(object));
         } catch (Exception e) {
             return "_error_";
+        }
+    }
+
+    private static Field getField(Class<?> clazz, String fieldName) {
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (Exception e) {
+            return getField(clazz.getSuperclass(), fieldName);
         }
     }
 }
