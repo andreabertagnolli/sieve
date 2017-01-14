@@ -19,4 +19,9 @@ public class Bran {
     public String getCode() {
         return code;
     }
+
+    @Override
+    public String toString() {
+        return getMessage();
+    }
 }

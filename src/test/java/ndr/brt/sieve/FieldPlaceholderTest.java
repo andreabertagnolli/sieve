@@ -2,6 +2,9 @@ package ndr.brt.sieve;
 
 import org.junit.Test;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FieldPlaceholderTest {
@@ -33,6 +36,16 @@ public class FieldPlaceholderTest {
         assertThat(result).isEqualTo("This field _error_ does not exist!");
     }
 
+    @Test
+    public void understand_first_level_without_parameters_objects() throws Exception {
+        String string = "This object has {{list.size()}} items";
+        List<String> list = asList("one", "two", "three");
+
+        String result = FieldPlaceholder.substitutePlaceholders(string, new ListPojo(list));
+
+        assertThat(result).isEqualTo("This object has 3 items");
+    }
+
     private class SubPojo extends Pojo {
 
         private final String address;
@@ -50,6 +63,14 @@ public class FieldPlaceholderTest {
         private Pojo(String name, Long id) {
             this.name = name;
             this.id = id;
+        }
+    }
+
+    private class ListPojo {
+        private final List<String> list;
+
+        private ListPojo(List<String> list) {
+            this.list = list;
         }
     }
 }

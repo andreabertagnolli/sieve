@@ -27,7 +27,7 @@ public class NestedLevelValidationTest {
         anotherMother.addSon(new Person("Frank", 18));
 
         SieveValidator<Mother> validator = SieveValidator.<Mother>validator()
-                .with(PredicateValidator.<Mother>when(m -> m.getSons().size() < 2).returns("MOT001", "{{name}} has less than 2 sons"))
+                .with(PredicateValidator.<Mother>when(m -> m.getSons().size() < 2).returns("MOT001", "{{name}} has only {{sons.size()}} sons"))
                 .with(on(Mother::getSons)
                         .execute(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
                         .execute(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")));
