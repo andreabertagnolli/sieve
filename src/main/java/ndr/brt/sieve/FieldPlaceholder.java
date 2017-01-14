@@ -30,13 +30,11 @@ public class FieldPlaceholder {
         try {
             if (!placeholder.contains(".")) {
                 Field field = getField(object.getClass(), placeholder);
-                field.setAccessible(true);
                 return Objects.toString(field.get(object));
             }
             else {
                 String[] split = placeholder.split("\\.");
                 Field field = getField(object.getClass(), split[0]);
-                field.setAccessible(true);
                 Class<?> declaringClass = field.getType();
                 Method method = declaringClass.getDeclaredMethod(split[1].substring(0, split[1].indexOf("(")));
                 method.setAccessible(true);
@@ -49,7 +47,9 @@ public class FieldPlaceholder {
 
     private static Field getField(Class<?> clazz, String fieldName) {
         try {
-            return clazz.getDeclaredField(fieldName);
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field;
         } catch (Exception e) {
             return getField(clazz.getSuperclass(), fieldName);
         }
