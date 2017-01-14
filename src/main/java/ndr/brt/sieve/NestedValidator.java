@@ -11,10 +11,6 @@ public class NestedValidator<T> {
 
     private List<NestedReference<T, ?>> nestedReferences = new ArrayList<>();
 
-    public NestedValidator() {
-
-    }
-
     public static <T> NestedValidator<T> nestedValidator() {
         return new NestedValidator<>();
     }
@@ -34,11 +30,11 @@ public class NestedValidator<T> {
     private Stream<Bran> validateNested(T object) {
         List<Bran> result = new ArrayList<>();
         for (NestedReference<T, ?> nestedReference : nestedReferences) {
-            List nesteds = nestedReference.getObjects(object);
-            for (PredicateValidator<?> validator : nestedReference.getValidators()) {
-                List<Bran> collect = (List<Bran>) validator.validate(nesteds).collect(toList());
-                result.addAll(collect);
-            }
+            Stream<Bran> branStream = nestedReference.getValidators().stream()
+                    .map(v -> v.validate((List) nestedReference.getObjects(object)))
+                    .flatMap(e -> e)
+                    .map(Bran.class::cast);
+            result.addAll(branStream.collect(toList()));
         }
         return result.stream();
     }
