@@ -17,24 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NestedLevelValidationTest {
 
     @Test
-    public void validate_mother_sons() throws Exception {
-        Mother mother = new Mother("Lina", 42);
-        mother.addSon(new Person("John", 15));
-        mother.addSon(new Person("Laura", 19));
-        mother.addSon(new Person("Bruno", 6));
-
-        SieveValidator<Mother> validator = SieveValidator.<Mother>validator()
-                .with(NestedReference.on(Mother::getSons)
-                        .execute(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
-                        .execute(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")));
-
-        List<Bran> brans = validator.validate(mother).collect(toList());
-
-        assertThat(brans.stream().filter(b -> "AGE001".equals(b.getCode())).count()).isEqualTo(2);
-        assertThat(brans.stream().filter(b -> "NAME001".equals(b.getCode())).count()).isEqualTo(1);
-    }
-
-    @Test
     public void validate_mothers_sons() throws Exception {
         Mother mother = new Mother("Lina", 42);
         mother.addSon(new Person("John", 15));
