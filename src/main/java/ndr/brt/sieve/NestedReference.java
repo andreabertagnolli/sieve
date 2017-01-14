@@ -13,7 +13,7 @@ public class NestedReference<T, N> {
         this.getNested = getNested;
     }
 
-    public static <T, N> NestedReference on(Function<T, List<N>> getNested) {
+    public static <T, N> NestedReference<T, N> on(Function<T, List<N>> getNested) {
         return new NestedReference<>(getNested);
     }
 
