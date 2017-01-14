@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class NestedValidator<T> {
+public class SieveValidator<T> {
 
     private List<NestedReference<T, ?>> nestedReferences = new ArrayList<>();
 
-    public static <T> NestedValidator<T> nestedValidator() {
-        return new NestedValidator<>();
+    public static <T> SieveValidator<T> validator() {
+        return new SieveValidator<>();
     }
 
     public Stream<Bran> validate(T object) {
@@ -39,7 +39,7 @@ public class NestedValidator<T> {
         return result.stream();
     }
 
-    public NestedValidator<T> with(NestedReference<T, ?> nestedReference) {
+    public SieveValidator<T> with(NestedReference<T, ?> nestedReference) {
         this.nestedReferences.add(nestedReference);
         return this;
     }

@@ -2,7 +2,7 @@ package ndr.brt.sieve.uat;
 
 import ndr.brt.sieve.Bran;
 import ndr.brt.sieve.NestedReference;
-import ndr.brt.sieve.NestedValidator;
+import ndr.brt.sieve.SieveValidator;
 import ndr.brt.sieve.PredicateValidator;
 import ndr.brt.sieve.uat.pojo.Mother;
 import ndr.brt.sieve.uat.pojo.Person;
@@ -23,7 +23,7 @@ public class NestedLevelValidationTest {
         mother.addSon(new Person("Laura", 19));
         mother.addSon(new Person("Bruno", 6));
 
-        NestedValidator<Mother> validator = NestedValidator.<Mother>nestedValidator()
+        SieveValidator<Mother> validator = SieveValidator.<Mother>validator()
                 .with(NestedReference.on(Mother::getSons)
                         .execute(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
                         .execute(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")));
@@ -48,7 +48,7 @@ public class NestedLevelValidationTest {
                 .execute(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
                 .execute(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!"));
 
-        NestedValidator<Mother> validator = NestedValidator.<Mother>nestedValidator()
+        SieveValidator<Mother> validator = SieveValidator.<Mother>validator()
                 .with(sonsReference);
 
         List<Bran> brans = validator.validate(asList(mother, anotherMother)).collect(toList());
