@@ -4,23 +4,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-public class Placeholder {
+public class ReflectionExpression {
     private final Object object;
-    private final String placeholder;
+    private final String expression;
 
-    public Placeholder(Object object, String placeholder) {
+    public ReflectionExpression(Object object, String expression) {
         this.object = object;
-        this.placeholder = placeholder;
+        this.expression = expression;
     }
 
     public String getValue() {
         try {
-            if (!placeholder.contains(".")) {
-                Field field = getField(object.getClass(), placeholder);
+            if (!expression.contains(".")) {
+                Field field = getField(object.getClass(), expression);
                 return Objects.toString(field.get(object));
             }
             else {
-                String[] split = placeholder.split("\\.");
+                String[] split = expression.split("\\.");
                 Field field = getField(object.getClass(), split[0]);
                 Class<?> type = field.getType();
                 String methodName = split[1].substring(0, split[1].indexOf("("));

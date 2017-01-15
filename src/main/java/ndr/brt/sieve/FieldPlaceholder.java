@@ -16,8 +16,8 @@ public class FieldPlaceholder {
             String path = left.substring(start + PLACEHOLDER_OPEN.length(), end);
 
             left = left.substring(end + PLACEHOLDER_CLOSE.length());
-            Placeholder placeholder = new Placeholder(object, path);
-            actual.append(placeholder.getValue());
+            ReflectionExpression reflectionExpression = new ReflectionExpression(object, path);
+            actual.append(reflectionExpression.getValue());
         }
         actual.append(left);
         return actual.toString();
