@@ -45,15 +45,16 @@ public class SieveValidator<T> {
     }
 
     private Stream<Bran> validateNested(T object) {
-        List<Bran> result = new ArrayList<>();
-        for (NestedReference<T, ?> nestedReference : nestedReferences) {
-            Stream<Bran> branStream = nestedReference.getValidators().stream()
-                    .map(v -> v.validate((List) nestedReference.getObjects(object)))
-                    .flatMap(e -> e)
-                    .map(Bran.class::cast);
-            result.addAll(branStream.collect(toList()));
-        }
-        return result.stream();
+        return nestedReferences.stream()
+                .map(n -> validateBoh(object, n))
+                .flatMap(e -> e);
+    }
+
+    private Stream<Bran> validateBoh(T object, NestedReference<T, ?> nestedReference) {
+        return nestedReference.getValidators().stream()
+                        .map(v -> v.validate((List) nestedReference.getObjects(object)))
+                        .flatMap(e -> e)
+                        .map(Bran.class::cast);
     }
 
     public SieveValidator<T> with(PredicateValidator<T> validator) {
