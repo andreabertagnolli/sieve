@@ -30,7 +30,7 @@ public class SieveValidator<T> {
 
         return concat(
                 objects.stream().
-                        map(this::validateTLevel)
+                        map(this::validateRoot)
                         .flatMap(e -> e),
                 objects.stream()
                         .map(this::validateNested)
@@ -38,7 +38,7 @@ public class SieveValidator<T> {
         );
     }
 
-    private Stream<Bran> validateTLevel(T object) {
+    private Stream<Bran> validateRoot(T object) {
         return validators.stream()
                 .map(v -> v.validate(object))
                 .flatMap(e -> e);
