@@ -43,7 +43,7 @@ public class PredicateValidator<T> {
         }
 
         public PredicateValidator<T> returns(String code, String description) {
-            return new PredicateValidator<T>(code, description, predicate);
+            return new PredicateValidator<>(code, description, predicate);
         }
     }
 }
