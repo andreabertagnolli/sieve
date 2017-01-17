@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Stream.concat;
 
 public class SieveValidator<T> {
@@ -18,19 +18,13 @@ public class SieveValidator<T> {
     }
 
     public Stream<Bran> validate(T object) {
-        return validateStream(Stream.of(object));
+        return validate(singletonList(object));
     }
 
     public Stream<Bran> validate(Collection<T> objects) {
-        return validateStream(objects.stream());
-    }
-
-    private Stream<Bran> validateStream(Stream<T> stream) {
-        List<T> objects = stream.collect(toList());
-
         return concat(
-                objects.stream().
-                        map(this::validateRoot)
+                objects.stream()
+                        .map(this::validateRoot)
                         .flatMap(e -> e),
                 objects.stream()
                         .map(this::validateNested)
@@ -46,15 +40,12 @@ public class SieveValidator<T> {
 
     private Stream<Bran> validateNested(T object) {
         return nestedReferences.stream()
-                .map(n -> validateBoh(object, n))
+                .map(n -> n.getValidators().stream()
+                    .map(v -> v.validate((List) n.getObjects(object)))
+                    .flatMap(e -> e)
+                    .map(Bran.class::cast)
+                )
                 .flatMap(e -> e);
-    }
-
-    private Stream<Bran> validateBoh(T object, NestedReference<T, ?> nestedReference) {
-        return nestedReference.getValidators().stream()
-                        .map(v -> v.validate((List) nestedReference.getObjects(object)))
-                        .flatMap(e -> e)
-                        .map(Bran.class::cast);
     }
 
     public SieveValidator<T> with(PredicateValidator<T> validator) {
