@@ -47,7 +47,7 @@ public class SieveValidator<T> {
                     .flatMap(identity())
                     .map(Bran.class::cast)
                 )
-                .flatMap(identity());
+                .flatMap(e -> e);
     }
 
     public SieveValidator<T> with(PredicateValidator<T> validator) {
