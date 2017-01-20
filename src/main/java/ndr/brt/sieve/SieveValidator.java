@@ -55,7 +55,7 @@ public class SieveValidator<T> {
     }
 
     public <N> SieveValidator<T> with(Function<T, List<N>> nested, SieveValidator<N> validator) {
-        this.nestedReferences.add(NestedReference.on(nested).execute(validator));
+        this.nestedReferences.add(new NestedReference<>(nested, validator));
         return this;
     }
 
