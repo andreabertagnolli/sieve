@@ -60,7 +60,7 @@ public class SieveValidator<T> {
         return this;
     }
 
-    public List<PredicateValidator<T>> getValidators() {
+    List<PredicateValidator<T>> getValidators() {
         return validators;
     }
 
