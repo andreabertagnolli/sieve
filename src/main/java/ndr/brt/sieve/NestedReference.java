@@ -13,18 +13,13 @@ public class NestedReference<T, N> {
         this.getNested = getNested;
     }
 
+    public <T> NestedReference<T, N> execute(SieveValidator<N> validator) {
+        this.validators.addAll(validator.getValidators());
+        return (NestedReference<T, N>) this;
+    }
+
     public static <T, N> NestedReference<T, N> on(Function<T, List<N>> getNested) {
         return new NestedReference<>(getNested);
-    }
-
-    public NestedReference<T, N> execute(List<PredicateValidator<N>> nestedValidators) {
-        validators.addAll(nestedValidators);
-        return this;
-    }
-
-    public NestedReference<T, N> execute(PredicateValidator<N> nestedValidator) {
-        validators.add(nestedValidator);
-        return this;
     }
 
     public List<N> getObjects(T object) {
@@ -33,10 +28,5 @@ public class NestedReference<T, N> {
 
     public List<PredicateValidator<N>> getValidators() {
         return validators;
-    }
-
-    public <T> NestedReference<T, N> execute(SieveValidator<N> validator) {
-        this.validators.addAll(validator.getValidators());
-        return (NestedReference<T, N>) this;
     }
 }
