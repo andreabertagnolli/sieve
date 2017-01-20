@@ -11,7 +11,6 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static ndr.brt.sieve.NestedReference.on;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NestedLevelValidationTest {
@@ -28,9 +27,10 @@ public class NestedLevelValidationTest {
 
         SieveValidator<Mother> validator = SieveValidator.<Mother>validator()
                 .with(PredicateValidator.<Mother>when(m -> m.getSons().size() < 2).returns("MOT001", "{{name}} has only {{sons.size()}} sons"))
-                .with(on(Mother::getSons)
-                        .execute(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
-                        .execute(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!")));
+                .with(Mother::getSons, SieveValidator.<Person>validator()
+                    .with(PredicateValidator.<Person>when(p -> p.getAge() < 18).returns("AGE001", "{{name}} is not of age"))
+                    .with(PredicateValidator.<Person>when(p -> p.getName().startsWith("B")).returns("NAME001", "{{name}} start with B, and that's illegal!"))
+                );
 
         List<Bran> brans = validator.validate(asList(mother, anotherMother)).collect(toList());
 

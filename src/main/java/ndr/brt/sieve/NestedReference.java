@@ -34,4 +34,9 @@ public class NestedReference<T, N> {
     public List<PredicateValidator<N>> getValidators() {
         return validators;
     }
+
+    public <T> NestedReference<T, N> execute(SieveValidator<N> validator) {
+        this.validators.addAll(validator.getValidators());
+        return (NestedReference<T, N>) this;
+    }
 }

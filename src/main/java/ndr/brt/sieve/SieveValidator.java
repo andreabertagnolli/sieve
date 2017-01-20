@@ -3,6 +3,7 @@ package ndr.brt.sieve;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
@@ -58,4 +59,12 @@ public class SieveValidator<T> {
         return this;
     }
 
+    public <N> SieveValidator<T> with(Function<T, List<N>> nested, SieveValidator<N> validator) {
+        this.nestedReferences.add(NestedReference.<T,N >on(nested).execute(validator));
+        return this;
+    }
+
+    public List<PredicateValidator<T>> getValidators() {
+        return validators;
+    }
 }
