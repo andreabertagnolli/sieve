@@ -32,23 +32,13 @@ Handles the more complex objects, you can define it as:
 SieveValidator.<SomeClass>validator()
     .with(aPredicateOnSomeClass)
     .with(anotherPredicateOnSomeClass)
-    .with(aNestedReference)
+    .with(SomeClass::getNested, anotherSieveValidatorOnNested)
+    .with(SomeClass::getAnotherNested, anotherSieveValidatorOnAnotherNested
     .validate(object)
 ```
 
 it will run all the predicate validators on "root level" of your object.
-If you need to validate some nested objects you can use **nested reference**
-
-What is?
-
-### Nested reference
-
-Is a component that define a list of validators on a nested field, like:
-```
-NestedReference.on(Mother::getSons).returns(predicateValidator) 
-```
-
-With that you can build your complicated nested validator.
+If you need to validate some nested objects you can build nested validators and add them specifying the function to get them.
 
 ### What does it returns?
 The `validate` methods returns a `Stream<Bran>`.  
