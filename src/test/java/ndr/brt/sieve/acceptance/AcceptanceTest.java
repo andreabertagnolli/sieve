@@ -1,19 +1,19 @@
-package ndr.brt.sieve.uat;
+package ndr.brt.sieve.acceptance;
 
 import ndr.brt.sieve.Bran;
 import ndr.brt.sieve.PredicateValidator;
 import ndr.brt.sieve.SieveValidator;
-import ndr.brt.sieve.uat.pojo.Mother;
-import ndr.brt.sieve.uat.pojo.Person;
+import ndr.brt.sieve.acceptance.pojo.*;
 import org.junit.Test;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static ndr.brt.sieve.PredicateValidator.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NestedLevelValidationTest {
+public class AcceptanceTest {
 
     @Test
     public void validate_mothers_sons() throws Exception {
@@ -37,5 +37,46 @@ public class NestedLevelValidationTest {
         assertThat(brans.stream().filter(b -> "MOT001".equals(b.getCode())).count()).isEqualTo(1);
         assertThat(brans.stream().filter(b -> "AGE001".equals(b.getCode())).count()).isEqualTo(2);
         assertThat(brans.stream().filter(b -> "NAME001".equals(b.getCode())).count()).isEqualTo(1);
+    }
+
+    @Test
+    public void validate_town() throws Exception {
+
+        Town town = new Town(
+            "Objectsville",
+            new Person("Laura", 54),
+            asList(
+                new District(
+                    "Immutable",
+                    new Person("Lizzy", 43),
+                    asList(
+                        new Block(
+                            345.43,
+                            asList(
+                                new House("FieldStreet 45", 4, 2, false),
+                                new House("ConstantStreet 1", 2, 1, true)
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
+        SieveValidator<House> housesValidator = SieveValidator.<House>validator()
+                .with(when(House::hasNoBasement).returns("BAS001", "The house in {{address}} has no basement")
+        );
+
+        SieveValidator<Block> blocksValidator = SieveValidator.<Block>validator()
+                .with(Block::getHouses, housesValidator);
+
+        SieveValidator<District> districtsValidator = SieveValidator.<District>validator()
+                .with(District::getBlocks, blocksValidator);
+
+        SieveValidator<Town> townValidator = SieveValidator.<Town>validator()
+                .with(Town::getDistricts, districtsValidator);
+
+        List<Bran> results = townValidator.validate(town).collect(toList());
+
+        assertThat(results).hasSize(1);
     }
 }

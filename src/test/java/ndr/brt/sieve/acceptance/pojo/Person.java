@@ -1,4 +1,4 @@
-package ndr.brt.sieve.uat.pojo;
+package ndr.brt.sieve.acceptance.pojo;
 
 public class Person {
     private final String name;

@@ -24,6 +24,7 @@ public class SieveValidator<T> {
     }
 
     public Stream<Bran> validate(Collection<T> objects) {
+
         return concat(
                 objects.stream()
                         .map(this::validateRoot)
@@ -42,11 +43,7 @@ public class SieveValidator<T> {
 
     private Stream<Bran> validateNested(T object) {
         return nestedReferences.stream()
-                .map(n -> n.getValidators().stream()
-                    .map(v -> v.validate((List) n.getObjects(object)))
-                    .flatMap(identity())
-                    .map(Bran.class::cast)
-                )
+                .map(nested -> nested.getValidator().validate((List) nested.getObjects(object)))
                 .flatMap(e -> e);
     }
 
@@ -60,26 +57,22 @@ public class SieveValidator<T> {
         return this;
     }
 
-    List<PredicateValidator<T>> getValidators() {
-        return validators;
-    }
-
     private static class NestedReference<T, N> {
 
         private final Function<T, List<N>> getNested;
-        private List<PredicateValidator<N>> validators = new ArrayList<>();
+        private final SieveValidator<N> validator;
 
         NestedReference(Function<T, List<N>> nested, SieveValidator<N> validator) {
             this.getNested = nested;
-            this.validators.addAll(validator.getValidators());
+            this.validator = validator;
         }
 
         List<N> getObjects(T object) {
             return getNested.apply(object);
         }
 
-        List<PredicateValidator<N>> getValidators() {
-            return validators;
+        SieveValidator<N> getValidator() {
+            return validator;
         }
     }
 }

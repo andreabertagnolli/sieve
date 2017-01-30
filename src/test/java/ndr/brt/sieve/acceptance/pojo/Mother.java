@@ -1,4 +1,4 @@
-package ndr.brt.sieve.uat.pojo;
+package ndr.brt.sieve.acceptance.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
