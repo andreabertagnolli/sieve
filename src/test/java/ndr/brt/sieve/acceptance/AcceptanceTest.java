@@ -62,8 +62,8 @@ public class AcceptanceTest {
             )
         );
 
-        SieveValidator<House> housesValidator = SieveValidator.<House>validator()
-                .with(when(House::hasNoBasement).returns("BAS001", "The house in {{address}} has no basement")
+        SieveValidator<House> housesValidator = SieveValidator.<House>validator().with(
+                when(House::hasNoBasement).returns("BAS001", "The house in {{address}} has no basement")
         );
 
         SieveValidator<Block> blocksValidator = SieveValidator.<Block>validator()

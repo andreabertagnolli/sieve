@@ -44,7 +44,7 @@ public class SieveValidator<T> {
     private Stream<Bran> validateNested(T object) {
         return nestedReferences.stream()
                 .map(nested -> nested.getValidator().validate((List) nested.getObjects(object)))
-                .flatMap(e -> e);
+                .flatMap(identity());
     }
 
     public SieveValidator<T> with(PredicateValidator<T> validator) {
