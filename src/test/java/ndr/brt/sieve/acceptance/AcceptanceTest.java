@@ -7,6 +7,7 @@ import ndr.brt.sieve.acceptance.pojo.*;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -56,6 +57,13 @@ public class AcceptanceTest {
                                 new House("FieldStreet 45", 4, 2, false),
                                 new House("ConstantStreet 1", 2, 1, true)
                             )
+                        ),
+                        new Block(
+                            345.43,
+                            asList(
+                                new House("MethodStreet 45", 1, 3, true),
+                                new House("FunctionStreet 1", 6, 2, false)
+                            )
                         )
                     )
                 )
@@ -67,7 +75,11 @@ public class AcceptanceTest {
         );
 
         SieveValidator<Block> blocksValidator = SieveValidator.<Block>validator()
-                .with(Block::getHouses, housesValidator);
+                .with(Block::getHouses, housesValidator)
+                .with(
+                        when(lessThan3Houses()).returns("BLO001", "The block has not enough houses")
+                )
+        ;
 
         SieveValidator<District> districtsValidator = SieveValidator.<District>validator()
                 .with(District::getBlocks, blocksValidator);
@@ -77,6 +89,11 @@ public class AcceptanceTest {
 
         List<Bran> results = townValidator.validate(town).collect(toList());
 
-        assertThat(results).hasSize(1);
+        assertThat(results.stream().filter(b -> "BAS001".equals(b.getCode())).collect(toList())).hasSize(2);
+        assertThat(results.stream().filter(b -> "BLO001".equals(b.getCode())).collect(toList())).hasSize(2);
+    }
+
+    private Predicate<Block> lessThan3Houses() {
+        return block -> block.getHouses().size() < 3;
     }
 }
