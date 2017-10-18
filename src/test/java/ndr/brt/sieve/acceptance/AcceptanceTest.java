@@ -4,7 +4,7 @@ import ndr.brt.sieve.Bran;
 import ndr.brt.sieve.PredicateValidator;
 import ndr.brt.sieve.SieveValidator;
 import ndr.brt.sieve.acceptance.pojo.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.function.Predicate;

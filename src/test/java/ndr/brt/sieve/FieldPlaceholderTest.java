@@ -1,13 +1,13 @@
 package ndr.brt.sieve;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FieldPlaceholderTest {
+class FieldPlaceholderTest {
 
     @Test
-    public void replace_placeholders() throws Exception {
+    void replace_placeholders() throws Exception {
         String string = "This object has id {{id}} and it's called {{name}}";
 
         String result = FieldPlaceholder.substitutePlaceholders(string, new Pojo("any name", 42L));
