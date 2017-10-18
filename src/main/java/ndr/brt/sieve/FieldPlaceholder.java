@@ -1,11 +1,13 @@
 package ndr.brt.sieve;
 
-public class FieldPlaceholder {
+import java.util.function.BiFunction;
+
+class FieldPlaceholder {
 
     private static final String PLACEHOLDER_OPEN = "{{";
     private static final String PLACEHOLDER_CLOSE = "}}";
 
-    public static String substitutePlaceholders(String string, Object object) {
+    static final BiFunction<String, Object, String> SUBSTITUTE_PLACEHOLDERS = (string, object) -> {
         StringBuilder actual = new StringBuilder();
         String left = string;
         while (left.contains(PLACEHOLDER_OPEN)) {
@@ -21,6 +23,5 @@ public class FieldPlaceholder {
         }
         actual.append(left);
         return actual.toString();
-    }
-
+    };
 }

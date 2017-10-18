@@ -1,6 +1,6 @@
 package ndr.brt.sieve;
 
-import static ndr.brt.sieve.FieldPlaceholder.substitutePlaceholders;
+import static ndr.brt.sieve.FieldPlaceholder.SUBSTITUTE_PLACEHOLDERS;
 
 public class Bran {
 
@@ -9,7 +9,7 @@ public class Bran {
 
     public Bran(Object object, String code, String description) {
         this.code = code;
-        this.description = substitutePlaceholders(description, object);
+        this.description = SUBSTITUTE_PLACEHOLDERS.apply(description, object);
     }
 
     public String getMessage() {
